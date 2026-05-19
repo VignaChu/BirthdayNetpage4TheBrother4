@@ -13,13 +13,13 @@ class ParticleCake {
         // 默认配置与用户配置合并
         this.config = Object.assign({
             text: '生日快乐',         // 最终显示的文字
-            particleCount: this.isMobile ? 6000 : 15000,    // 移动端减少粒子数量
-            particleSize: this.isMobile ? 1.5 : 3,          // 移动端减小粒子大小
-            textSize: this.isMobile ? 50 : 150,             // 移动端进一步减小文字大小
+            particleCount: this.isMobile ? 5000 : 15000,    // 移动端减少粒子数量
+            particleSize: this.isMobile ? 1.2 : 3,          // 移动端减小粒子大小
+            textSize: this.isMobile ? 35 : 150,             // 移动端进一步减小文字大小
             fontFamily: '"Microsoft YaHei", "PingFang SC", sans-serif', // 字体
             candleColor: '#FFFF00',   // 蜡烛颜色 (默认黄色)
-            cameraZ: this.isMobile ? 280 : 400,            // 移动端相机更近
-            textScale: this.isMobile ? 0.7 : 1.2           // 移动端文字缩放更小
+            cameraZ: this.isMobile ? 250 : 400,            // 移动端相机更近
+            textScale: this.isMobile ? 0.55 : 1.2          // 移动端文字缩放更小
         }, options);
 
         // 状态机
