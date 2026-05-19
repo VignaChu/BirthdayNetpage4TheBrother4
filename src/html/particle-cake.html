@@ -8,12 +8,126 @@
     <link rel="stylesheet" href="../css/particle-cake.css">
 </head>
 <body>
-    <div id="tap-tip" class="tap-tip">👆 许个愿，然后点击屏幕</div>
+    <!-- 加载状态提示 -->
+    <div id="loading-tip" class="loading-tip">🎂 正在准备惊喜...</div>
+    
+    <!-- 加载失败备用界面 -->
+    <div id="fallback-cake" class="fallback-cake" style="display: none;">
+        <div class="fallback-cake-container">
+            <div class="fallback-cake-body">
+                <div class="fallback-layer"></div>
+                <div class="fallback-layer"></div>
+                <div class="fallback-layer"></div>
+                <div class="fallback-candle">
+                    <div class="fallback-flame"></div>
+                </div>
+            </div>
+            <div class="fallback-text">生日快乐！</div>
+        </div>
+    </div>
+
+    <div id="tap-tip" class="tap-tip" style="display: none;">👆 许个愿，然后点击屏幕</div>
     <div id="canvas-box"></div>
     <a href="gallery.html" id="next-btn">查看回忆相册 📷</a>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="../js/ParticleCake.js"></script>
-    <script src="../js/particle-cake.js"></script>
+    <script>
+        // 记录加载状态
+        window.threeJsLoaded = false;
+        
+        // Three.js 加载成功回调
+        function onThreeJsLoaded() {
+            window.threeJsLoaded = true;
+            console.log('Three.js 加载成功');
+        }
+        
+        // Three.js 加载失败回调
+        function onThreeJsError() {
+            console.error('Three.js 加载失败，使用备用方案');
+            showFallback();
+        }
+        
+        // 显示备用界面
+        function showFallback() {
+            document.getElementById('loading-tip').style.display = 'none';
+            document.getElementById('fallback-cake').style.display = 'flex';
+            document.getElementById('tap-tip').style.display = 'block';
+            
+            // 备用方案的点击事件
+            document.body.addEventListener('click', function handleFallbackClick() {
+                document.body.removeEventListener('click', handleFallbackClick);
+                document.body.removeEventListener('touchstart', handleFallbackClick);
+                
+                document.getElementById('tap-tip').style.display = 'none';
+                document.getElementById('fallback-cake').classList.add('explode');
+                
+                setTimeout(() => {
+                    document.getElementById('next-btn').classList.add('show');
+                }, 1500);
+            });
+            
+            document.body.addEventListener('touchstart', function handleFallbackTouch() {
+                document.body.removeEventListener('click', handleFallbackClick);
+                document.body.removeEventListener('touchstart', handleFallbackTouch);
+                
+                document.getElementById('tap-tip').style.display = 'none';
+                document.getElementById('fallback-cake').classList.add('explode');
+                
+                setTimeout(() => {
+                    document.getElementById('next-btn').classList.add('show');
+                }, 1500);
+            }, { passive: true });
+        }
+        
+        // 设置加载超时
+        setTimeout(() => {
+            if (!window.threeJsLoaded) {
+                console.warn('Three.js 加载超时，使用备用方案');
+                showFallback();
+            }
+        }, 10000); // 10秒超时
+    </script>
+
+    <!-- 动态加载 Three.js，带错误处理 -->
+    <script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+        onload="onThreeJsLoaded()"
+        onerror="onThreeJsError()"
+        async
+    ></script>
+    
+    <!-- 主脚本，等待 Three.js 加载完成后执行 -->
+    <script>
+        function loadMainScript() {
+            const script = document.createElement('script');
+            script.src = '../js/ParticleCake.js';
+            script.onload = function() {
+                const script2 = document.createElement('script');
+                script2.src = '../js/particle-cake.js';
+                script2.onload = function() {
+                    document.getElementById('loading-tip').style.display = 'none';
+                    document.getElementById('tap-tip').style.display = 'block';
+                };
+                document.body.appendChild(script2);
+            };
+            script.onerror = function() {
+                console.error('ParticleCake.js 加载失败');
+                showFallback();
+            };
+            document.body.appendChild(script);
+        }
+        
+        // 如果 Three.js 已加载，立即加载主脚本
+        if (window.threeJsLoaded) {
+            loadMainScript();
+        } else {
+            // 等待 Three.js 加载
+            const checkInterval = setInterval(() => {
+                if (window.threeJsLoaded) {
+                    clearInterval(checkInterval);
+                    loadMainScript();
+                }
+            }, 100);
+        }
+    </script>
 </body>
 </html>

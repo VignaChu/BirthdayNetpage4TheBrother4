@@ -62,3 +62,128 @@ body::after {
     0% { transform: translate3d(-1%, -1%, 0) scale(1); }
     100% { transform: translate3d(1.5%, 1%, 0) scale(1.06); }
 }
+
+/* 加载状态提示 */
+.loading-tip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    z-index: 100;
+}
+
+/* 备用蛋糕界面 */
+.fallback-cake {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}
+
+.fallback-cake-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.fallback-cake-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fallback-layer {
+    background: linear-gradient(180deg, #ff6b9d 0%, #c44569 100%);
+    border-radius: 50% 50% 0 0;
+    box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+}
+
+.fallback-layer:nth-child(1) {
+    width: 200px;
+    height: 60px;
+}
+
+.fallback-layer:nth-child(2) {
+    width: 160px;
+    height: 50px;
+    margin-top: -10px;
+}
+
+.fallback-layer:nth-child(3) {
+    width: 120px;
+    height: 40px;
+    margin-top: -8px;
+}
+
+.fallback-candle {
+    width: 20px;
+    height: 50px;
+    background: linear-gradient(90deg, #ffd93d 0%, #ff9500 50%, #ffd93d 100%);
+    border-radius: 3px;
+    margin-top: -5px;
+    position: relative;
+}
+
+.fallback-flame {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 30px;
+    background: linear-gradient(180deg, #ffeb3b 0%, #ff9800 50%, #f44336 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: flicker 0.3s ease-in-out infinite alternate;
+    box-shadow: 0 0 20px rgba(255, 235, 59, 0.6);
+}
+
+.fallback-text {
+    margin-top: 30px;
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 20px rgba(255, 107, 157, 0.8);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* 备用蛋糕爆炸动画 */
+.fallback-cake.explode .fallback-cake-body {
+    animation: explodeCake 1s ease-out forwards;
+}
+
+.fallback-cake.explode .fallback-text {
+    animation: explodeText 1s ease-out forwards;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes flicker {
+    0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 1; }
+    100% { transform: translateX(-50%) scaleY(0.8) scaleX(0.9); opacity: 0.8; }
+}
+
+@keyframes glow {
+    0% { text-shadow: 0 0 20px rgba(255, 107, 157, 0.8); }
+    100% { text-shadow: 0 0 40px rgba(255, 107, 157, 1); }
+}
+
+@keyframes explodeCake {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes explodeText {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
