@@ -98,11 +98,13 @@
     <!-- 主脚本，等待 Three.js 加载完成后执行 -->
     <script>
         function loadMainScript() {
+            // 添加版本号绕过缓存
+            const version = '20260519';
             const script = document.createElement('script');
-            script.src = '../js/ParticleCake.js';
+            script.src = `../js/ParticleCake.js?v=${version}`;
             script.onload = function() {
                 const script2 = document.createElement('script');
-                script2.src = '../js/particle-cake.js';
+                script2.src = `../js/particle-cake.js?v=${version}`;
                 script2.onload = function() {
                     document.getElementById('loading-tip').style.display = 'none';
                     document.getElementById('tap-tip').style.display = 'block';
