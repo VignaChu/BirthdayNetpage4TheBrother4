@@ -7,19 +7,19 @@ class ParticleCake {
         }
 
         // 根据屏幕尺寸动态计算配置
-        const isMobile = window.innerWidth < 768;
+        this.isMobile = window.innerWidth < 768;
         const screenRatio = Math.min(window.innerWidth, window.innerHeight) / Math.max(window.innerWidth, window.innerHeight);
         
         // 默认配置与用户配置合并
         this.config = Object.assign({
             text: '生日快乐',         // 最终显示的文字
-            particleCount: isMobile ? 8000 : 15000,    // 移动端减少粒子数量
-            particleSize: isMobile ? 2 : 3,            // 移动端减小粒子大小
-            textSize: isMobile ? 80 : 150,             // 移动端减小文字大小
+            particleCount: this.isMobile ? 8000 : 15000,    // 移动端减少粒子数量
+            particleSize: this.isMobile ? 2 : 3,            // 移动端减小粒子大小
+            textSize: this.isMobile ? 80 : 150,             // 移动端减小文字大小
             fontFamily: '"Microsoft YaHei", "PingFang SC", sans-serif', // 字体
             candleColor: '#FFFF00',   // 蜡烛颜色 (默认黄色)
-            cameraZ: isMobile ? 320 : 400,            // 移动端相机更近
-            textScale: isMobile ? 0.9 : 1.2           // 移动端文字缩放
+            cameraZ: this.isMobile ? 320 : 400,            // 移动端相机更近
+            textScale: this.isMobile ? 0.9 : 1.2           // 移动端文字缩放
         }, options);
 
         // 状态机
@@ -49,8 +49,8 @@ class ParticleCake {
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0x050510, 0.002);
 
-        this.camera = new THREE.PerspectiveCamera(isMobile ? 70 : 60, this.container.clientWidth / this.container.clientHeight, 1, 2000);
-        this.camera.position.set(0, isMobile ? 80 : 100, this.config.cameraZ);
+        this.camera = new THREE.PerspectiveCamera(this.isMobile ? 70 : 60, this.container.clientWidth / this.container.clientHeight, 1, 2000);
+        this.camera.position.set(0, this.isMobile ? 80 : 100, this.config.cameraZ);
         this.camera.lookAt(0, 0, 0);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -125,7 +125,6 @@ class ParticleCake {
     generateCake() {
         this.currentState = 'CAKE';
         const pCount = this.config.particleCount;
-        const isMobile = window.innerWidth < 768;
 
         // 粒子划分
         const cakeCount = Math.floor(pCount * 0.85); // 85% 做胚子
@@ -133,7 +132,7 @@ class ParticleCake {
         const flameCount = pCount - cakeCount - candleCount; // 剩下 5% 做火苗
 
         // 移动端缩小蛋糕尺寸
-        const scale = isMobile ? 0.75 : 1;
+        const scale = this.isMobile ? 0.75 : 1;
 
         let currentIndex = 0;
 
@@ -198,9 +197,8 @@ class ParticleCake {
 
     // 动态提取文字坐标
     generateText() {
-        const isMobile = window.innerWidth < 768;
-        const canvasWidth = isMobile ? 500 : 800;
-        const canvasHeight = isMobile ? 280 : 400;
+        const canvasWidth = this.isMobile ? 500 : 800;
+        const canvasHeight = this.isMobile ? 280 : 400;
         
         const canvas2d = document.createElement('canvas');
         canvas2d.width = canvasWidth;
@@ -217,7 +215,7 @@ class ParticleCake {
         const validPixels = [];
 
         // 根据设备调整采样间隔
-        const step = isMobile ? 2 : 3;
+        const step = this.isMobile ? 2 : 3;
         for (let y = 0; y < canvas2d.height; y += step) {
             for (let x = 0; x < canvas2d.width; x += step) {
                 const index = (y * canvas2d.width + x) * 4;
@@ -241,7 +239,7 @@ class ParticleCake {
             
             this.targetPositions[i3] = targetPixel.x * scale;
             this.targetPositions[i3 + 1] = targetPixel.y * scale;
-            this.targetPositions[i3 + 2] = (Math.random() - 0.5) * (isMobile ? 10 : 20);
+            this.targetPositions[i3 + 2] = (Math.random() - 0.5) * (this.isMobile ? 10 : 20);
         }
     }
 
