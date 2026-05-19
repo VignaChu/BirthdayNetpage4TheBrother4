@@ -13,13 +13,13 @@ class ParticleCake {
         // 默认配置与用户配置合并
         this.config = Object.assign({
             text: '生日快乐',         // 最终显示的文字
-            particleCount: this.isMobile ? 8000 : 15000,    // 移动端减少粒子数量
-            particleSize: this.isMobile ? 2 : 3,            // 移动端减小粒子大小
-            textSize: this.isMobile ? 80 : 150,             // 移动端减小文字大小
+            particleCount: this.isMobile ? 6000 : 15000,    // 移动端减少粒子数量
+            particleSize: this.isMobile ? 1.5 : 3,          // 移动端减小粒子大小
+            textSize: this.isMobile ? 50 : 150,             // 移动端进一步减小文字大小
             fontFamily: '"Microsoft YaHei", "PingFang SC", sans-serif', // 字体
             candleColor: '#FFFF00',   // 蜡烛颜色 (默认黄色)
-            cameraZ: this.isMobile ? 320 : 400,            // 移动端相机更近
-            textScale: this.isMobile ? 0.9 : 1.2           // 移动端文字缩放
+            cameraZ: this.isMobile ? 280 : 400,            // 移动端相机更近
+            textScale: this.isMobile ? 0.7 : 1.2           // 移动端文字缩放更小
         }, options);
 
         // 状态机
@@ -49,8 +49,8 @@ class ParticleCake {
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0x050510, 0.002);
 
-        this.camera = new THREE.PerspectiveCamera(this.isMobile ? 70 : 60, this.container.clientWidth / this.container.clientHeight, 1, 2000);
-        this.camera.position.set(0, this.isMobile ? 80 : 100, this.config.cameraZ);
+        this.camera = new THREE.PerspectiveCamera(this.isMobile ? 80 : 60, this.container.clientWidth / this.container.clientHeight, 1, 2000);
+        this.camera.position.set(0, this.isMobile ? 60 : 100, this.config.cameraZ);
         this.camera.lookAt(0, 0, 0);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -131,8 +131,8 @@ class ParticleCake {
         const candleCount = Math.floor(pCount * 0.10); // 10% 做蜡烛
         const flameCount = pCount - cakeCount - candleCount; // 剩下 5% 做火苗
 
-        // 移动端缩小蛋糕尺寸
-        const scale = this.isMobile ? 0.75 : 1;
+        // 蛋糕尺寸保持一致
+        const scale = 1;
 
         let currentIndex = 0;
 
@@ -197,8 +197,8 @@ class ParticleCake {
 
     // 动态提取文字坐标
     generateText() {
-        const canvasWidth = this.isMobile ? 500 : 800;
-        const canvasHeight = this.isMobile ? 280 : 400;
+        const canvasWidth = this.isMobile ? 350 : 800;
+        const canvasHeight = this.isMobile ? 180 : 400;
         
         const canvas2d = document.createElement('canvas');
         canvas2d.width = canvasWidth;
