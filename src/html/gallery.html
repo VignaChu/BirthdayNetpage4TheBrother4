@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>生日回忆相册</title>
+    <link rel="stylesheet" href="../css/gallery.css">
+</head>
+<body>
+    <div class="particle-layer" id="particle-layer" aria-hidden="true"></div>
+    <main class="stage">
+        <section class="shell">
+            <div>
+                <div class="topbar">
+                    <div class="badge">📷 回忆相册 · 点击左右按钮切换</div>
+                    <div class="pill">共 5 张图片</div>
+                </div>
+                <div class="hero">
+                    <h1>生日回忆相册</h1>
+                    <p>每张照片都带着我们的回忆，希望你能够徜徉在回忆中，感受到那份珍惜和温暖。</p>
+                </div>
+            </div>
+
+            <button class="nav-btn prev" id="prev-btn" type="button" aria-label="上一张">‹</button>
+            <button class="nav-btn next" id="next-btn" type="button" aria-label="下一张">›</button>
+            <div class="gallery" id="gallery"></div>
+
+            <div class="actions">
+                <a class="btn primary" href="card.html">回到贺卡页</a>
+                <a class="btn secondary" href="ending.html">查看结语页</a>
+                <a class="btn secondary" href="../../index.html">回到连连看首页</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/gallery.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: linear-gradient(160deg, #050510 0%, #0b1230 52%, #1c2c5b 100%);
+    font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 通用的点击提示文字样式 */
+.tap-tip {
+    position: absolute;
+    top: 20%;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    letter-spacing: 2px;
+    animation: pulseTip 1.5s infinite alternate;
+    z-index: 100;
+    cursor: pointer;
+    user-select: none;
+}
+
+@keyframes pulseTip {
+    0% { opacity: 0.4; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1.05); }
+}
+
+/* 跳转按钮样式（默认隐藏） */
+.next-btn {
+    position: absolute;
+    bottom: 10%;
+    padding: 12px 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 16px;
+    letter-spacing: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    z-index: 100;
+}
+
+.next-btn.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.next-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
