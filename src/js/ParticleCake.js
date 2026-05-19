@@ -6,14 +6,20 @@ class ParticleCake {
             return;
         }
 
+        // 根据屏幕尺寸动态计算配置
+        const isMobile = window.innerWidth < 768;
+        const screenRatio = Math.min(window.innerWidth, window.innerHeight) / Math.max(window.innerWidth, window.innerHeight);
+        
         // 默认配置与用户配置合并
         this.config = Object.assign({
             text: '生日快乐',         // 最终显示的文字
-            particleCount: 15000,    // 粒子数量
-            particleSize: 3,         // 粒子大小
-            textSize: 150,           // 文字大小
-            fontFamily: '"Microsoft YaHei", sans-serif', // 字体
-            candleColor: '#FFFF00'   // 蜡烛颜色 (默认黄色)
+            particleCount: isMobile ? 8000 : 15000,    // 移动端减少粒子数量
+            particleSize: isMobile ? 2 : 3,            // 移动端减小粒子大小
+            textSize: isMobile ? 80 : 150,             // 移动端减小文字大小
+            fontFamily: '"Microsoft YaHei", "PingFang SC", sans-serif', // 字体
+            candleColor: '#FFFF00',   // 蜡烛颜色 (默认黄色)
+            cameraZ: isMobile ? 320 : 400,            // 移动端相机更近
+            textScale: isMobile ? 0.9 : 1.2           // 移动端文字缩放
         }, options);
 
         // 状态机
@@ -43,8 +49,8 @@ class ParticleCake {
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0x050510, 0.002);
 
-        this.camera = new THREE.PerspectiveCamera(60, this.container.clientWidth / this.container.clientHeight, 1, 2000);
-        this.camera.position.set(0, 100, 400);
+        this.camera = new THREE.PerspectiveCamera(isMobile ? 70 : 60, this.container.clientWidth / this.container.clientHeight, 1, 2000);
+        this.camera.position.set(0, isMobile ? 80 : 100, this.config.cameraZ);
         this.camera.lookAt(0, 0, 0);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -119,24 +125,28 @@ class ParticleCake {
     generateCake() {
         this.currentState = 'CAKE';
         const pCount = this.config.particleCount;
+        const isMobile = window.innerWidth < 768;
 
         // 粒子划分
         const cakeCount = Math.floor(pCount * 0.85); // 85% 做胚子
         const candleCount = Math.floor(pCount * 0.10); // 10% 做蜡烛
         const flameCount = pCount - cakeCount - candleCount; // 剩下 5% 做火苗
 
+        // 移动端缩小蛋糕尺寸
+        const scale = isMobile ? 0.75 : 1;
+
         let currentIndex = 0;
 
         // 1. 生成挺拔的圆柱体蛋糕胚子
-        const cakeRadius = 100;
-        const cakeHeight = 100;
-        const cakeBaseY = -50;
+        const cakeRadius = 100 * scale;
+        const cakeHeight = 100 * scale;
+        const cakeBaseY = -50 * scale;
         this.createCylinderPoints(cakeCount, cakeRadius, cakeHeight, this.targetPositions, this.colors, currentIndex, null, cakeBaseY, this.types, 0);
         currentIndex += cakeCount;
 
         // 2. 生成蜡烛 (彩色的直柱子)
-        const candleRadius = 8;
-        const candleHeight = 60;
+        const candleRadius = 8 * scale;
+        const candleHeight = 60 * scale;
         const candleBaseY = cakeBaseY + cakeHeight; // 蜡烛在蛋糕顶上
         
         // 将十六进制颜色转换为HSL
@@ -147,8 +157,8 @@ class ParticleCake {
         currentIndex += candleCount;
 
         // 3. 生成一小簇火苗 (在蜡烛顶端)
-        const flameRadius = 6;
-        const flameHeight = 15;
+        const flameRadius = 6 * scale;
+        const flameHeight = 15 * scale;
         const flameBaseY = candleBaseY + candleHeight;
         const flameHsl = {h: 0.03, s: 1.0, l: 0.6}; // 火热的橙红色
         this.createCylinderPoints(flameCount, flameRadius, flameHeight, this.targetPositions, this.colors, currentIndex, flameHsl, flameBaseY, this.types, 2);
@@ -188,9 +198,13 @@ class ParticleCake {
 
     // 动态提取文字坐标
     generateText() {
+        const isMobile = window.innerWidth < 768;
+        const canvasWidth = isMobile ? 500 : 800;
+        const canvasHeight = isMobile ? 280 : 400;
+        
         const canvas2d = document.createElement('canvas');
-        canvas2d.width = 800;
-        canvas2d.height = 400;
+        canvas2d.width = canvasWidth;
+        canvas2d.height = canvasHeight;
         const ctx = canvas2d.getContext('2d');
         
         ctx.font = `bold ${this.config.textSize}px ${this.config.fontFamily}`;
@@ -202,8 +216,10 @@ class ParticleCake {
         const imgData = ctx.getImageData(0, 0, canvas2d.width, canvas2d.height).data;
         const validPixels = [];
 
-        for (let y = 0; y < canvas2d.height; y += 3) {
-            for (let x = 0; x < canvas2d.width; x += 3) {
+        // 根据设备调整采样间隔
+        const step = isMobile ? 2 : 3;
+        for (let y = 0; y < canvas2d.height; y += step) {
+            for (let x = 0; x < canvas2d.width; x += step) {
                 const index = (y * canvas2d.width + x) * 4;
                 if (imgData[index + 3] > 128) {
                     validPixels.push({
@@ -216,15 +232,16 @@ class ParticleCake {
 
         const pCount = this.config.particleCount;
         const validCount = validPixels.length;
+        const scale = this.config.textScale;
         
         for (let i = 0; i < pCount; i++) {
             const i3 = i * 3;
             // 如果粒子多于像素，循环复用像素点
             const targetPixel = validPixels[i % validCount]; 
             
-            this.targetPositions[i3] = targetPixel.x * 1.2;
-            this.targetPositions[i3 + 1] = targetPixel.y * 1.2;
-            this.targetPositions[i3 + 2] = (Math.random() - 0.5) * 20;
+            this.targetPositions[i3] = targetPixel.x * scale;
+            this.targetPositions[i3 + 1] = targetPixel.y * scale;
+            this.targetPositions[i3 + 2] = (Math.random() - 0.5) * (isMobile ? 10 : 20);
         }
     }
 
